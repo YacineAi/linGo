@@ -60,7 +60,6 @@ app.use("/webhook", botly.router());
 
 botly.on("message", async (senderId, message) => {
   /*--------- s t a r t ---------*/
-  const user = await userDb(senderId);
   if (message.message.text) {
     if (message.message.text.length > 1600) {
       botly.sendText({id: senderId, text: "النص أطول من 1600 حرف :| يرجى قص النص الى أجزاء أصغر..."});
@@ -74,6 +73,7 @@ botly.on("message", async (senderId, message) => {
             });
       });
       } else {
+        const user = await userDb(senderId);
         if (user[0]) {
           axios.get(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${user[0].lang}&dt=t&q=${message.message.text}`)
           .then (({ data }) => {
@@ -122,23 +122,8 @@ botly.on("message", async (senderId, message) => {
 });
 botly.on("postback", async (senderId, message, postback, data, ref) => {
     /*--------- s t a r t ---------*/
-    const user = await db.get(senderId);
     if (message.postback){ // Normal (buttons)
       if (postback == "GET_STARTED"){
-          if (user != null) {
-            botly.sendText({id: senderId, text: "أهلا بك مجددا في ترجمان 😁☺️"});
-          } else {
-            await db.put({ lang: "en" }, senderId)
-            .then((data) => {
-              botly.sendGeneric({id: senderId, elements: {
-                title: "يا أهلا بك في ترجمان! 😀",
-                image_url: "https://i.ibb.co/NstpC5B/trjmn.png",
-                subtitle: "انا روبوت ترجمة 🤖, أستطيع الترجمة إلى 13 لغة مختلفة 🌍😁",
-                buttons: [
-                    botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang")
-                ]}, aspectRatio: Botly.CONST.IMAGE_ASPECT_RATIO.HORIZONTAL});
-            });
-          }
       } else if (postback == "ChangeLang") {
           botly.send({
               "id": senderId,
