@@ -64,7 +64,7 @@ botly.on("message", async (senderId, message) => {
     if (message.message.text.length > 1600) {
       botly.sendText({id: senderId, text: "النص أطول من 1600 حرف :| يرجى قص النص الى أجزاء أصغر..."});
     } else {
-      if (message.message.text.length.startsWith("https://")) {
+      if (message.message.text.startsWith("https://")) {
         botly.sendImage({id: senderId, url: "https://i.ibb.co/d2TxPkf/gensharebot.png"}, (err, data) => {
           botly.sendButtons({
               id: senderId,
