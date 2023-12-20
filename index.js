@@ -87,7 +87,7 @@ botly.on("message", async (senderId, message) => {
               id: senderId,
               text: text,
               buttons: [
-                botly.createWebURLButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
+                botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
               ],
             });
             /*
@@ -110,7 +110,7 @@ botly.on("message", async (senderId, message) => {
                     id: senderId,
                     text: text,
                     buttons: [
-                      botly.createWebURLButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
+                      botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
                     ],
                   });
                   /*
