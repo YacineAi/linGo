@@ -64,9 +64,12 @@ botly.on("message", async (senderId, message) => {
   if (message.message.text) {
     botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_ON}, async () => {
     if (message.message.text.length > 1600) {
+      botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
       botly.sendText({id: senderId, text: "النص أطول من 1600 حرف :| يرجى قص النص الى أجزاء أصغر..."});
+    });
     } else {
       if (message.message.text.startsWith("https://")) {
+        botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
         botly.sendImage({id: senderId, url: "https://i.ibb.co/d2TxPkf/gensharebot.png"}, (err, data) => {
           botly.sendButtons({
               id: senderId,
@@ -74,6 +77,7 @@ botly.on("message", async (senderId, message) => {
               buttons: [botly.createWebURLButton("Messenger 💬", "m.me/Sharebotapp/")],
             });
       });
+    });
       } else {
         const user = await userDb(senderId);
         if (user[0]) {
@@ -83,6 +87,7 @@ botly.on("message", async (senderId, message) => {
             data[0].forEach(element => {
               text += '\n' + element[0];
             });
+            botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
             botly.sendButtons({
               id: senderId,
               text: text,
@@ -90,6 +95,7 @@ botly.on("message", async (senderId, message) => {
                 botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
               ],
             });
+          });
             /*
             botly.sendText({id: senderId, text: text,
               quick_replies: [
@@ -106,6 +112,7 @@ botly.on("message", async (senderId, message) => {
                   data[0].forEach(element => {
                     text += '\n' + element[0];
                   });
+                  botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
                   botly.sendButtons({
                     id: senderId,
                     text: text,
@@ -113,6 +120,7 @@ botly.on("message", async (senderId, message) => {
                       botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
                     ],
                   });
+                });
                   /*
                   botly.sendText({id: senderId, text: text,
                     quick_replies: [
