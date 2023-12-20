@@ -60,7 +60,9 @@ app.use("/webhook", botly.router());
 
 botly.on("message", async (senderId, message) => {
   /*--------- s t a r t ---------*/
+  botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.MARK_SEEN}, async () => {
   if (message.message.text) {
+    botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_ON}, async () => {
     if (message.message.text.length > 1600) {
       botly.sendText({id: senderId, text: "النص أطول من 1600 حرف :| يرجى قص النص الى أجزاء أصغر..."});
     } else {
@@ -81,9 +83,17 @@ botly.on("message", async (senderId, message) => {
             data[0].forEach(element => {
               text += '\n' + element[0];
             });
+            botly.sendButtons({
+              id: senderId,
+              text: text,
+              buttons: [
+                botly.createWebURLButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
+              ],
+            });
+            /*
             botly.sendText({id: senderId, text: text,
               quick_replies: [
-                  botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});
+                  botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});*/
           }, error => {
             console.log(error)
           })
@@ -96,14 +106,23 @@ botly.on("message", async (senderId, message) => {
                   data[0].forEach(element => {
                     text += '\n' + element[0];
                   });
+                  botly.sendButtons({
+                    id: senderId,
+                    text: text,
+                    buttons: [
+                      botly.createWebURLButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
+                    ],
+                  });
+                  /*
                   botly.sendText({id: senderId, text: text,
                     quick_replies: [
-                      botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});
+                      botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});*/
                     }, error => { console.log(error) })
                   });
-                }
+              }
       }
     }
+  });
     } else if (message.message.attachments[0].payload.sticker_id) {
       //botly.sendText({id: senderId, text: "(Y)"});
     } else if (message.message.attachments[0].type == "image") {
@@ -117,6 +136,7 @@ botly.on("message", async (senderId, message) => {
     } else if (message.message.attachments[0].type == "audio" || message.message.attachments[0].type == "video") {
       botly.sendText({id: senderId, text: "لا يمكنني ترجمة الوسائط 🎥 للأسف! إستعمل النصوص فقط 😐"});
     }
+  });
 
   /*--------- e n d ---------*/
 });
