@@ -113,6 +113,7 @@ botly.on("message", async (senderId, message) => {
                     text += '\n' + element[0];
                   });
                   botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
+                    /*
                   botly.sendButtons({
                     id: senderId,
                     text: text,
@@ -120,6 +121,14 @@ botly.on("message", async (senderId, message) => {
                       botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
                     ],
                   });
+                  */
+                  botly.sendImage({id: senderId, url: "https://i.ibb.co/d7yxXY0/photo-2024-01-19-17-38-40.jpg"}, (err, data) => {
+                    botly.sendButtons({
+                        id: senderId,
+                        text: "⭕️ مهم 📣 \nالمرجو دعم صفحتنا بالاعجاب على التعليق هنا :\nhttps://www.facebook.com/100064851216054/posts/pfbid0cmQkXHuebMGdiwJT4fpvZ7Xd6m9ixzhgMLKFW1zJARMoH1btV6C5GWQrCECU6c26l/\n(اذا لم يظهر لك تعليقنا الرجاء الاعجاب بصفحتنا أولا 💜)",
+                        buttons: [botly.createPostbackButton("موافق", "ok")],
+                      });
+                });
                 });
                   /*
                   botly.sendText({id: senderId, text: text,
