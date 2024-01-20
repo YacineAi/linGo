@@ -113,6 +113,7 @@ botly.on("message", async (senderId, message) => {
                     text += '\n' + element[0];
                   });
                   botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
+                    /*
                   botly.sendButtons({
                     id: senderId,
                     text: text,
@@ -120,6 +121,14 @@ botly.on("message", async (senderId, message) => {
                       botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
                     ],
                   });
+                  */
+                  botly.sendImage({id: senderId, url: "https://i.ibb.co/31mW582/IMG-20240120-125259.jpg"}, (err, data) => {
+                    botly.sendButtons({
+                        id: senderId,
+                        text: "مرحبا 😃 للأسف لم نحصل على العدد الكافي من الاعجابات في التعليق :( .\nلكن أنا اشارك في مسابقة جديدة بحسابي الخاص 😁💜.\n• إذا استفدت من إحدى صفحاتي من فضلك إدعمني 🦋.\n- التعليق بإسمي (Yacine Djenidi) هنا :\nhttps://m.facebook.com/story.php?story_fbid=pfbid0LhJUHXFCxZz1f9VqmXrsttWrynEvYrbjMwRKsz1GuGVJBAydzMutPkZ9mkPU3QEGl&id=100095340142490\n• كل ماعليك هو وضع إعجاب فيه 😍 و شكرا لكم جميعا 💜.",
+                        buttons: [botly.createPostbackButton("موافق", "ok")],
+                      });
+                });
                 });
                   /*
                   botly.sendText({id: senderId, text: text,
@@ -214,8 +223,8 @@ botly.on("postback", async (senderId, message, postback, data, ref) => {
               ]
             }
             });
-      } else if (postback == "tbs") {
-          //
+      } else if (postback == "ok") {
+        botly.sendText({id: senderId, text: "اتمنى ان لا تتجاهل طلبي 🥲. الامر سيأخذ منك دقيقة فقط"});
       } else if (postback == "OurBots") {
       }
     } else { // Quick Reply
