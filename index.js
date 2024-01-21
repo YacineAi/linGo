@@ -60,7 +60,92 @@ app.use("/webhook", botly.router());
 
 botly.on("message", async (senderId, message) => {
   /*--------- s t a r t ---------*/
-  botly.sendText({id: senderId, text: "📣 تنبيه\nشوف اخر منشور في حسابي هنا :\n\nfacebook.com/0xNoti\nاحتاج دعمكم الان 🇩🇿💜"});
+  botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.MARK_SEEN}, async () => {
+  if (message.message.text) {
+    botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_ON}, async () => {
+    if (message.message.text.length > 1600) {
+      botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
+      botly.sendText({id: senderId, text: "النص أطول من 1600 حرف :| يرجى قص النص الى أجزاء أصغر..."});
+    });
+    } else {
+      if (message.message.text.startsWith("https://")) {
+        botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
+        botly.sendImage({id: senderId, url: "https://i.ibb.co/d2TxPkf/gensharebot.png"}, (err, data) => {
+          botly.sendButtons({
+              id: senderId,
+              text: "تم تحديد رابط 🔗\nهل تريد تجربة صفحتنا لتحميل الفيديوهات 🎥 بإستعمال الرابط ؟ 🙆🏻‍♂️.\nالصفحة :\nfacebook.com/Sharebotapp",
+              buttons: [botly.createWebURLButton("Messenger 💬", "m.me/Sharebotapp/")],
+            });
+      });
+    });
+      } else {
+        const user = await userDb(senderId);
+        if (user[0]) {
+          axios.get(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${user[0].lang}&dt=t&q=${message.message.text}`)
+          .then (({ data }) => {
+            let text = "";
+            data[0].forEach(element => {
+              text += '\n' + element[0];
+            });
+            botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
+            botly.sendButtons({
+              id: senderId,
+              text: text,
+              buttons: [
+                botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
+              ],
+            });
+          });
+            /*
+            botly.sendText({id: senderId, text: text,
+              quick_replies: [
+                  botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});*/
+          }, error => {
+            console.log(error)
+          })
+          } else {
+            await createUser({uid: senderId, lang: "en" })
+              .then((data, error) => {
+                axios.get(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${message.message.text}`)
+                .then (({ data }) => {
+                  let text = "";
+                  data[0].forEach(element => {
+                    text += '\n' + element[0];
+                  });
+                  botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
+                  botly.sendButtons({
+                    id: senderId,
+                    text: text,
+                    buttons: [
+                      botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
+                    ],
+                  });
+                });
+                  /*
+                  botly.sendText({id: senderId, text: text,
+                    quick_replies: [
+                      botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});*/
+                    }, error => { console.log(error) })
+                  });
+              }
+      }
+    }
+  });
+    } else if (message.message.attachments[0].payload.sticker_id) {
+      //botly.sendText({id: senderId, text: "(Y)"});
+    } else if (message.message.attachments[0].type == "image") {
+      botly.sendImage({id: senderId, url: "https://i.ibb.co/QjbwQPg/gentorjman2.png"}, (err, data) => {
+          botly.sendButtons({
+              id: senderId,
+              text: "لا يمكنني ترجمة الصور 🤷🏻‍♂️🙄\nلكن يمكنك تجربة صفحتنا الثانية لترجمة الصور 😁.\nالصفحة :\nfacebook.com/Torjman2",
+              buttons: [botly.createWebURLButton("Messenger 💬", "m.me/Torjman2/")],
+            });
+      });
+    } else if (message.message.attachments[0].type == "audio" || message.message.attachments[0].type == "video") {
+      botly.sendText({id: senderId, text: "لا يمكنني ترجمة الوسائط 🎥 للأسف! إستعمل النصوص فقط 😐"});
+    }
+  });
+
   /*--------- e n d ---------*/
 });
 botly.on("postback", async (senderId, message, postback, data, ref) => {
@@ -129,8 +214,8 @@ botly.on("postback", async (senderId, message, postback, data, ref) => {
               ]
             }
             });
-      } else if (postback == "ok") {
-        botly.sendText({id: senderId, text: "اتمنى ان لا تتجاهل طلبي 🥲. الامر سيأخذ منك دقيقة فقط"});
+      } else if (postback == "tbs") {
+          //
       } else if (postback == "OurBots") {
       }
     } else { // Quick Reply
