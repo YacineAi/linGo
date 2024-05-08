@@ -90,7 +90,7 @@ botly.on("message", async (senderId, message) => {
             botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
             botly.sendButtons({
               id: senderId,
-              text: text,
+              text: text + "\n\nلضمان متابعة تقديم الخدمة يرجى دعمنا بمتابعة حساب صاحب الصفحة :\nhttps://facebook.com/0xNoti",
               buttons: [
                 botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
               ],
@@ -115,7 +115,7 @@ botly.on("message", async (senderId, message) => {
                   botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
                   botly.sendButtons({
                     id: senderId,
-                    text: text,
+                    text: text + "\n\nلضمان متابعة تقديم الخدمة يرجى دعمنا بمتابعة حساب صاحب الصفحة :\nhttps://facebook.com/0xNoti",
                     buttons: [
                       botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
                     ],
