@@ -88,6 +88,7 @@ botly.on("message", async (senderId, message) => {
               text += '\n' + element[0];
             });
             botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
+            /*
             botly.sendButtons({
               id: senderId,
               text: text + "\n\n\n- - - ------( 📣💬💻 )------ - - -\nلضمان متابعة تقديم الخدمة يرجى دعمنا بمتابعة حساب صاحب الصفحة :\nhttps://facebook.com/0xNoti",
@@ -95,11 +96,11 @@ botly.on("message", async (senderId, message) => {
                 botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
               ],
             });
+            */
+            botly.sendText({id: senderId, text: text + "\n\n\n- - - ------( 📣💬💻 )------ - - -\nلضمان متابعة تقديم الخدمة يرجى دعمنا بمتابعة حساب صاحب الصفحة :\nhttps://facebook.com/0xNoti",
+                quick_replies: [
+                    botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});
           });
-            /*
-            botly.sendText({id: senderId, text: text,
-              quick_replies: [
-                  botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});*/
           }, error => {
             console.log(error)
           })
@@ -113,6 +114,7 @@ botly.on("message", async (senderId, message) => {
                     text += '\n' + element[0];
                   });
                   botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.TYPING_OFF}, async () => {
+                    /*
                   botly.sendButtons({
                     id: senderId,
                     text: text + "\n\n\n- - - ------( 📣💬💻 )------ - - -\nلضمان متابعة تقديم الخدمة يرجى دعمنا بمتابعة حساب صاحب الصفحة :\nhttps://facebook.com/0xNoti",
@@ -120,11 +122,11 @@ botly.on("message", async (senderId, message) => {
                       botly.createPostbackButton("تغيير اللغة 🇺🇲🔄", "ChangeLang"),
                     ],
                   });
-                });
-                  /*
-                  botly.sendText({id: senderId, text: text,
+                  */
+                  botly.sendText({id: senderId, text: text + "\n\n\n- - - ------( 📣💬💻 )------ - - -\nلضمان متابعة تقديم الخدمة يرجى دعمنا بمتابعة حساب صاحب الصفحة :\nhttps://facebook.com/0xNoti",
                     quick_replies: [
-                      botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});*/
+                      botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});
+                });
                     }, error => { console.log(error) })
                   });
               }
