@@ -1,11 +1,15 @@
 const express = require("express");
 const app = express();
-const axios = require("axios");
 const Botly = require("botly");
+const axios = require("axios");
 const botly = new Botly({
-  accessToken: process.env.PAGE_ACCESS_TOKEN,
-  verifyToken: process.env.VERIFY_TOKEN,
+	accessToken: process.env.PAGE_ACCESS_TOKEN,
+	notificationType: Botly.CONST.REGULAR,
+	FB_URL: "https://graph.facebook.com/v2.6/",
 });
+
+
+
 const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient(process.env.SB_URL, process.env.SB_KEY, { auth: { persistSession: false} });
 
@@ -50,15 +54,27 @@ async function userDb(userId) {
 };
 
 
-app.get("/", function (_req, res) {
+app.get("/", function(_req, res) {
+	res.sendStatus(200);
+});
+/* ----- ESSENTIALS ----- */
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+/* ----- MAGIC ----- */
+app.post('/webhook', (req, res) => {
+ // console.log(req.body)
+  if (req.body.message) {
+    onMessage(req.body.message.sender.id, req.body.message);
+  } else if (req.body.postback) {
+    onPostBack(req.body.postback.message.sender.id, req.body.postback.message, req.body.postback.postback);
+  }
   res.sendStatus(200);
 });
 
-app.use(express.json({ verify: botly.getVerifySignature(process.env.APP_SECRET) }));
-app.use(express.urlencoded({ extended: false }));
-app.use("/webhook", botly.router());
+/* ----- HANDELS ----- */
 
-botly.on("message", async (senderId, message) => {
+const onMessage = async (senderId, message) => {
   /*--------- s t a r t ---------*/
   botly.sendAction({id: senderId, action: Botly.CONST.ACTION_TYPES.MARK_SEEN}, async () => {
   if (message.message.text) {
@@ -149,155 +165,155 @@ botly.on("message", async (senderId, message) => {
   });
 
   /*--------- e n d ---------*/
-});
-botly.on("postback", async (senderId, message, postback, data, ref) => {
-    /*--------- s t a r t ---------*/
-    if (message.postback){ // Normal (buttons)
-      if (postback == "GET_STARTED"){
-      } else if (postback == "ChangeLang") {
-          botly.send({
-              "id": senderId,
-              "message": {
-              "text": "من فضلك إختر اللغة التي تريد ان اترجم لك لها 🔁🌐",
-              "quick_replies":[
-                {
-                  "content_type":"text",
-                  "title":"Arabic 🇩🇿",
-                  "payload":"ar",
-                },{
-                  "content_type":"text",
-                  "title":"English 🇺🇸",
-                  "payload":"en",
-                },{
-                  "content_type":"text",
-                  "title":"French 🇫🇷",
-                  "payload":"fr",
-                },{
-                  "content_type":"text",
-                  "title":"German 🇩🇪",
-                  "payload":"de",
-                },{
-                  "content_type":"text",
-                  "title":"Spanish 🇪🇸",
-                  "payload":"es",
-                },{
-                  "content_type":"text",
-                  "title":"Russian 🇷🇺",
-                  "payload":"ru",
-                },{
-                  "content_type":"text",
-                  "title":"Italian 🇮🇹",
-                  "payload":"it",
-                },{
-                  "content_type":"text",
-                  "title":"Turkish 🇹🇷",
-                  "payload":"tr",
-                },{
-                  "content_type":"text",
-                  "title":"Korean 🇰🇷",
-                  "payload":"ko",
-                },{
-                  "content_type":"text",
-                  "title":"Japanese 🇯🇵",
-                  "payload":"ja",
-                },{
-                  "content_type":"text",
-                  "title":"Hindi 🇮🇳",
-                  "payload":"hi",
-                },{
-                  "content_type":"text",
-                  "title":"Albanian 🇦🇱",
-                  "payload":"sq",
-                },{
-                  "content_type":"text",
-                  "title":"Swedish 🇸🇪",
-                  "payload":"sv",
-                }
-              ]
-            }
-            });
-      } else if (postback == "tbs") {
-          //
-      } else if (postback == "OurBots") {
-      }
-    } else { // Quick Reply
-      if (message.message.text == "tbs") {
-          //
-      } else if (message.message.text == "tbs") {
-        //
-      } else if (postback == "ChangeLang"){
-          botly.send({
-              "id": senderId,
-              "message": {
-              "text": "من فضلك إختر اللغة التي تريد ان اترجم لك لها 🔁🌐",
-              "quick_replies":[
-                {
-                  "content_type":"text",
-                  "title":"Arabic 🇩🇿",
-                  "payload":"ar",
-                },{
-                  "content_type":"text",
-                  "title":"English 🇺🇸",
-                  "payload":"en",
-                },{
-                  "content_type":"text",
-                  "title":"French 🇫🇷",
-                  "payload":"fr",
-                },{
-                  "content_type":"text",
-                  "title":"German 🇩🇪",
-                  "payload":"de",
-                },{
-                  "content_type":"text",
-                  "title":"Spanish 🇪🇸",
-                  "payload":"es",
-                },{
-                  "content_type":"text",
-                  "title":"Russian 🇷🇺",
-                  "payload":"ru",
-                },{
-                  "content_type":"text",
-                  "title":"Italian 🇮🇹",
-                  "payload":"it",
-                },{
-                  "content_type":"text",
-                  "title":"Turkish 🇹🇷",
-                  "payload":"tr",
-                },{
-                  "content_type":"text",
-                  "title":"Korean 🇰🇷",
-                  "payload":"ko",
-                },{
-                  "content_type":"text",
-                  "title":"Japanese 🇯🇵",
-                  "payload":"ja",
-                },{
-                  "content_type":"text",
-                  "title":"Hindi 🇮🇳",
-                  "payload":"hi",
-                },{
-                  "content_type":"text",
-                  "title":"Albanian 🇦🇱",
-                  "payload":"sq",
-                },{
-                  "content_type":"text",
-                  "title":"Swedish 🇸🇪",
-                  "payload":"sv",
-                }
-              ]
-            }
-            });
-      } else {
-        await updateUser(senderId, {lang: postback })
-        .then((data, error) => {
-          if (error) { botly.sendText({id: senderId, text: "حدث خطأ"}); }
-          botly.sendText({id: senderId, text: "تم تغيير اللغة بنجاح 😀🌍"});
-        });
-       }
-    }
-   /*--------- e n d ---------*/
-});
+};
+/* ----- POSTBACK ----- */
 
-app.listen(3000, () =>
-  console.log(`App is on Port : 3000`)
-)
+const onPostBack = async (senderId, message, postback) => {
+  /*--------- s t a r t ---------*/
+  if (message.postback){ // Normal (buttons)
+    if (postback == "GET_STARTED"){
+    } else if (postback == "ChangeLang") {
+        botly.send({
+            "id": senderId,
+            "message": {
+            "text": "من فضلك إختر اللغة التي تريد ان اترجم لك لها 🔁🌐",
+            "quick_replies":[
+              {
+                "content_type":"text",
+                "title":"Arabic 🇩🇿",
+                "payload":"ar",
+              },{
+                "content_type":"text",
+                "title":"English 🇺🇸",
+                "payload":"en",
+              },{
+                "content_type":"text",
+                "title":"French 🇫🇷",
+                "payload":"fr",
+              },{
+                "content_type":"text",
+                "title":"German 🇩🇪",
+                "payload":"de",
+              },{
+                "content_type":"text",
+                "title":"Spanish 🇪🇸",
+                "payload":"es",
+              },{
+                "content_type":"text",
+                "title":"Russian 🇷🇺",
+                "payload":"ru",
+              },{
+                "content_type":"text",
+                "title":"Italian 🇮🇹",
+                "payload":"it",
+              },{
+                "content_type":"text",
+                "title":"Turkish 🇹🇷",
+                "payload":"tr",
+              },{
+                "content_type":"text",
+                "title":"Korean 🇰🇷",
+                "payload":"ko",
+              },{
+                "content_type":"text",
+                "title":"Japanese 🇯🇵",
+                "payload":"ja",
+              },{
+                "content_type":"text",
+                "title":"Hindi 🇮🇳",
+                "payload":"hi",
+              },{
+                "content_type":"text",
+                "title":"Albanian 🇦🇱",
+                "payload":"sq",
+              },{
+                "content_type":"text",
+                "title":"Swedish 🇸🇪",
+                "payload":"sv",
+              }
+            ]
+          }
+          });
+    } else if (postback == "tbs") {
+        //
+    } else if (postback == "OurBots") {
+    }
+  } else { // Quick Reply
+    if (message.message.text == "tbs") {
+        //
+    } else if (message.message.text == "tbs") {
+      //
+    } else if (postback == "ChangeLang"){
+        botly.send({
+            "id": senderId,
+            "message": {
+            "text": "من فضلك إختر اللغة التي تريد ان اترجم لك لها 🔁🌐",
+            "quick_replies":[
+              {
+                "content_type":"text",
+                "title":"Arabic 🇩🇿",
+                "payload":"ar",
+              },{
+                "content_type":"text",
+                "title":"English 🇺🇸",
+                "payload":"en",
+              },{
+                "content_type":"text",
+                "title":"French 🇫🇷",
+                "payload":"fr",
+              },{
+                "content_type":"text",
+                "title":"German 🇩🇪",
+                "payload":"de",
+              },{
+                "content_type":"text",
+                "title":"Spanish 🇪🇸",
+                "payload":"es",
+              },{
+                "content_type":"text",
+                "title":"Russian 🇷🇺",
+                "payload":"ru",
+              },{
+                "content_type":"text",
+                "title":"Italian 🇮🇹",
+                "payload":"it",
+              },{
+                "content_type":"text",
+                "title":"Turkish 🇹🇷",
+                "payload":"tr",
+              },{
+                "content_type":"text",
+                "title":"Korean 🇰🇷",
+                "payload":"ko",
+              },{
+                "content_type":"text",
+                "title":"Japanese 🇯🇵",
+                "payload":"ja",
+              },{
+                "content_type":"text",
+                "title":"Hindi 🇮🇳",
+                "payload":"hi",
+              },{
+                "content_type":"text",
+                "title":"Albanian 🇦🇱",
+                "payload":"sq",
+              },{
+                "content_type":"text",
+                "title":"Swedish 🇸🇪",
+                "payload":"sv",
+              }
+            ]
+          }
+          });
+    } else {
+      await updateUser(senderId, {lang: postback })
+      .then((data, error) => {
+        if (error) { botly.sendText({id: senderId, text: "حدث خطأ"}); }
+        botly.sendText({id: senderId, text: "تم تغيير اللغة بنجاح 😀🌍"});
+      });
+     }
+  }
+ /*--------- e n d ---------*/
+};
+/* ----- HANDELS ----- */
+app.listen(3000, () => console.log(`App is on port : 3000`));
