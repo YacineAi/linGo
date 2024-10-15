@@ -113,7 +113,7 @@ const onMessage = async (senderId, message) => {
               ],
             });
             */
-            botly.sendText({id: senderId, text: text + "\n\n\n- - - ------( 📣💬💻 )------ - - -\nلضمان متابعة تقديم الخدمة يرجى دعمنا بمتابعة حساب صاحب الصفحة :\nhttps://facebook.com/0xNoti",
+            botly.sendText({id: senderId, text: text,
                 quick_replies: [
                     botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});
           });
@@ -139,7 +139,7 @@ const onMessage = async (senderId, message) => {
                     ],
                   });
                   */
-                  botly.sendText({id: senderId, text: text + "\n\n\n- - - ------( 📣💬💻 )------ - - -\nلضمان متابعة تقديم الخدمة يرجى دعمنا بمتابعة حساب صاحب الصفحة :\nhttps://facebook.com/0xNoti",
+                  botly.sendText({id: senderId, text: text,
                     quick_replies: [
                       botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});
                 });
