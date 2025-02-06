@@ -113,7 +113,7 @@ const onMessage = async (senderId, message) => {
               ],
             });
             */
-            botly.sendText({id: senderId, text: text,
+            botly.sendText({id: senderId, text: text + "\n\n\nهذه ترجمة من 360 Translate 💬.",
                 quick_replies: [
                     botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});
           });
@@ -139,7 +139,7 @@ const onMessage = async (senderId, message) => {
                     ],
                   });
                   */
-                  botly.sendText({id: senderId, text: text,
+                  botly.sendText({id: senderId, text: text + "\n\n\nهذه ترجمة من 360 Translate 💬.",
                     quick_replies: [
                       botly.createQuickReply("تغيير اللغة 🇺🇲🔄", "ChangeLang")]});
                 });
